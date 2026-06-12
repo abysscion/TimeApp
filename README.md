@@ -1,53 +1,53 @@
 # Unity Showcase Time App
 
-Небольшое Unity WebGL-приложение для отображения, синхронизации и ручного редактирования времени. В интерфейсе есть цифровые и аналоговые часы; время можно менять через форму редактирования или перетаскиванием стрелок аналоговых часов.
+A small Unity WebGL application for displaying, synchronizing, and manually editing time. The interface includes digital and analog clocks; time can be changed either through an edit form or by dragging the hands of the analog clock.
 
-Проект демонстрирует модульную Unity-архитектуру, асинхронную загрузку сцены через Addressables, DI через Zenject и работу с внешними HTTP API времени.
+The project demonstrates a modular Unity architecture, asynchronous scene loading via Addressables, DI with Zenject, and integration with external HTTP time APIs.
 
 ## Demo
 
-Проект доступен в браузере:
+The project is available in the browser:
 
-**[Открыть WebGL-билд](https://abysscion.github.io/TimeApp/)**
+**[Open WebGL build](https://abysscion.github.io/TimeApp/)**
 
-## Возможности
+## Features
 
-* цифровые и аналоговые часы;
-* ручное редактирование времени;
-* перетаскивание стрелок аналоговых часов;
-* синхронизация UTC-времени через внешние API;
-* fallback между несколькими источниками времени и системным UTC;
-* загрузочный экран с прогрессом;
-* загрузка gameplay-сцены через Addressables.
+* digital and analog clocks;
+* manual time editing;
+* dragging the analog clock hands;
+* UTC time synchronization via external APIs;
+* fallback between multiple time sources and system UTC;
+* loading screen with progress indication;
+* gameplay scene loading via Addressables.
 
-## Стек
+## Stack
 
 * Unity `2022.3.54f1 LTS`;
 * C#;
 * WebGL / IL2CPP;
-* UGUI и TextMesh Pro;
+* UGUI and TextMesh Pro;
 * Addressables;
 * Zenject;
 * UniTask;
 * UnityWebRequest.
 
-## Архитектура
+## Architecture
 
-Проект использует Clean Architecture-inspired модульную структуру: доменные модели и интерфейсы отделены от UI, сервисов и Unity-specific инфраструктуры, но архитектура адаптирована под Unity lifecycle, Zenject и Addressables.
+The project uses a Clean Architecture-inspired modular structure: domain models and interfaces are separated from the UI, services, and Unity-specific infrastructure, while the architecture is adapted to the Unity lifecycle, Zenject, and Addressables.
 
-Основной поток состояний приложения:
+Main application state flow:
 
 ```text
 Bootstrap -> Startup -> Loading -> Gameplay
 ```
 
-`Startup` создает запрос загрузки, `Loading` выполняет `LoadingRequest`, показывает прогресс и после загрузки переводит приложение в `Gameplay`. Gameplay-сцена загружается через Addressables по адресу `S_Gameplay`, а не как обычная сцена из Build Settings.
+`Startup` creates a loading request, `Loading` executes the `LoadingRequest`, displays progress, and transitions the application to `Gameplay` after loading is complete. The gameplay scene is loaded through Addressables using the `S_Gameplay` address, rather than as a regular scene from Build Settings.
 
-DI собирается через Zenject installers и контексты сцены/модулей: `SceneContext_Gameplay`, `UIContext_Shared`, `ModuleContext_TimeMachine`, `UIContext_TimeMachine`.
+DI is assembled through Zenject installers and scene/module contexts: `SceneContext_Gameplay`, `UIContext_Shared`, `ModuleContext_TimeMachine`, `UIContext_TimeMachine`.
 
-Проект разделен на asmdef-модули: `ADA_Shared`, `ADA_Shared_Domain`, `ADA_Modules_TimeMachine`, `ADA_Utilities_Editor`.
+The project is split into asmdef modules: `ADA_Shared`, `ADA_Shared_Domain`, `ADA_Modules_TimeMachine`, `ADA_Utilities_Editor`.
 
-## Структура проекта
+## Project Structure
 
 ```text
 Assets/_Project
@@ -77,38 +77,38 @@ Assets/_Project
 
 ## Addressables
 
-Основные группы Addressables:
+Main Addressables groups:
 
-* `Shared` — общие UI-префабы, TMP-ресурсы и графика;
-* `Gameplay` — gameplay-сцена и контекст сцены;
-* `Module_TimeMachine` — префабы и конфиг модуля часов;
-* `Built In Data` и `Orphans` — служебные группы Addressables.
+* `Shared` — shared UI prefabs, TMP resources, and graphics;
+* `Gameplay` — gameplay scene and scene context;
+* `Module_TimeMachine` — clock module prefabs and configuration;
+* `Built In Data` and `Orphans` — service Addressables groups.
 
-## Синхронизация времени
+## Time Synchronization
 
-Список серверов времени задается в `TimeServerSettings`. По умолчанию используются:
+The list of time servers is defined in `TimeServerSettings`. By default, the following sources are used:
 
 * `https://yandex.com/time/sync.json`;
 * `http://worldclockapi.com/api/json/utc/now`;
 * `https://timeapi.io/api/Time/current/zone?timeZone=UTC`.
 
-Если все внешние источники недоступны, приложение использует `DateTime.UtcNow`.
+If all external sources are unavailable, the application uses `DateTime.UtcNow`.
 
-## Запуск проекта
+## Running the Project
 
-1. Откройте проект в Unity Hub через Unity `2022.3.54f1`.
-2. Убедитесь, что установлен модуль `WebGL Build Support`, если нужна WebGL-сборка.
-3. Откройте bootstrap-сцену `Assets/_Project/Scenes/S_Boot.unity`.
-4. Запустите проект в Editor.
+1. Open the project in Unity Hub using Unity `2022.3.54f1`.
+2. Make sure the `WebGL Build Support` module is installed if a WebGL build is required.
+3. Open the bootstrap scene `Assets/_Project/Scenes/S_Boot.unity`.
+4. Run the project in the Editor.
 
-## Пользовательский сценарий
+## User Flow
 
-1. Приложение стартует с bootstrap-сцены и показывает загрузочный экран.
-2. После загрузки открывается экран часов.
-3. Пользователь видит синхронизированное время на цифровых и аналоговых часах.
-4. Время можно изменить через форму редактирования или перетаскиванием стрелок.
-5. Изменения можно сохранить или отменить.
+1. The application starts from the bootstrap scene and displays the loading screen.
+2. After loading is complete, the clock screen opens.
+3. The user sees synchronized time on the digital and analog clocks.
+4. The time can be changed through the edit form or by dragging the clock hands.
+5. Changes can be saved or cancelled.
 
 ## License
 
-Лицензия проекта не указана.
+The project license is not specified.
